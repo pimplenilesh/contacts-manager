@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ContactsManager.Application.Contracts;
+using ContactsManager.Application.DTOs;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,38 +12,52 @@ namespace ContactsManager.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ContactController : ControllerBase
+    public class ContactsController : ControllerBase
     {
-        // GET: api/<ContactController>
+        private readonly IContactsService _contactsService;
+        public ContactsController(IContactsService contactsService)
+        {
+            _contactsService = contactsService;
+        }
+
+        // GET: api/<ContactsController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IEnumerable<ContactDTO>> Get()
         {
-            return new string[] { "value1", "value2" };
+            var contacts = await _contactsService.GetAllContactsAsync();
+            return contacts;
         }
 
-        // GET api/<ContactController>/5s
+        // GET api/<ContactsController>/5s
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            return "value";
+            var contact = await _contactsService.GetByIdAsync(id);
+            return Ok(contact);
         }
 
-        // POST api/<ContactController>
+        // POST api/<ContactsController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] ContactDTO contactDTO)
         {
+            var result = await _contactsService.AddAsync(contactDTO);
+            return Created("Contacts/Get", result);
         }
 
-        // PUT api/<ContactController>/5
+        // PUT api/<ContactsController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public async Task<IActionResult> Put(int id, [FromBody] ContactDTO contact)
         {
+            var result = await _contactsService.UpdateAsync(id, contact);
+            return Ok(result);
         }
 
-        // DELETE api/<ContactController>/5
+        // DELETE api/<ContactsController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
+            bool result = await _contactsService.DeleteAsync(id);
+            return Ok(result);
         }
     }
 }

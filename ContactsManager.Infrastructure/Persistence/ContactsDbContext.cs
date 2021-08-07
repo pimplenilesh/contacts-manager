@@ -1,4 +1,5 @@
-﻿using ContactsManager.Domain.EntityMapper;
+﻿using ContactsManager.Domain.Entities;
+using ContactsManager.Domain.EntityMapper;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ namespace ContactsManager.Infrastructure.Persistence
         {
 
         }
+        public DbSet<Contact> Contact { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

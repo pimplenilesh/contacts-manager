@@ -1,7 +1,10 @@
 ﻿using ContactsManager.Domain.Entities;
 using ContactsManager.Domain.Interfaces;
+using ContactsManager.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,29 +13,45 @@ namespace ContactsManager.Infrastructure.Repositories
 {
     public class ContactsRepository : IContactsRepository
     {
-        public Task<Contact> AddAsync(Contact entity)
+        private readonly DbSet<Contact> _contacts;
+        private readonly ContactsDbContext _context;
+
+        public ContactsRepository(ContactsDbContext context)
         {
-            throw new NotImplementedException();
+            _contacts = context.Contact;
+            _context = context;
         }
 
-        public Task DeleteAsync(Contact entity)
+        public async Task<Contact> AddAsync(Contact entity)
         {
-            throw new NotImplementedException();
+            await _contacts.AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return entity;
         }
 
-        public Task<IReadOnlyList<Contact>> GetAllAsync()
+        public async Task<bool> DeleteAsync(Contact entity)
         {
-            throw new NotImplementedException();
+            _context.Remove(entity);
+            return await _context.SaveChangesAsync() > 0;
         }
 
-        public Task<Contact> GetByIdAsync(int id)
+        public async Task<List<Contact>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            var contacts = await _contacts.ToListAsync();
+            return contacts;
         }
 
-        public Task UpdateAsync(Contact entity)
+        public async Task<Contact> GetByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var contact = await _contacts.FindAsync(id);
+            return contact;
+        }
+
+        public async Task<Contact> UpdateAsync(Contact entity)
+        {
+            _context.Entry(entity).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return entity;
         }
     }
 }
