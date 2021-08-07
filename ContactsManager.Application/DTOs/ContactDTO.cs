@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ContactsManager.Domain.Entities
+namespace ContactsManager.Application.DTOs
 {
-    public class Contact : BaseEntity
+    public class ContactDTO
     {
         public string FirstName { get; set; }
         public string LastName { get; set; }
