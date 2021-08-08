@@ -1,5 +1,6 @@
 ﻿using ContactsManager.Application.Wrappers;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -12,12 +13,13 @@ namespace ContactsManager.API.Middlewares
 {
     public class ErrorHandlerMiddleware
     {
-
         private readonly RequestDelegate _next;
+        private readonly ILogger<ErrorHandlerMiddleware> _logger;
 
-        public ErrorHandlerMiddleware(RequestDelegate next)
+        public ErrorHandlerMiddleware(RequestDelegate next, ILogger<ErrorHandlerMiddleware> logger)
         {
             _next = next;
+            _logger = logger;
         }
 
         public async Task Invoke(HttpContext context)
@@ -45,9 +47,10 @@ namespace ContactsManager.API.Middlewares
                 }
                 var result = JsonSerializer.Serialize(responseModel);
 
+                _logger.LogError(error.Message);
+
                 await response.WriteAsync(result);
             }
         }
-
     }
 }
