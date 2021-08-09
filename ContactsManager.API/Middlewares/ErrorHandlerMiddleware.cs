@@ -1,4 +1,5 @@
-﻿using ContactsManager.Application.Wrappers;
+﻿using ContactsManager.Application.Exceptions;
+using ContactsManager.Application.Wrappers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System;
@@ -36,8 +37,7 @@ namespace ContactsManager.API.Middlewares
 
                 switch (error)
                 {
-                    case KeyNotFoundException e:
-                        // not found error
+                    case ContactNotFoundException e:
                         response.StatusCode = (int)HttpStatusCode.NotFound;
                         break;
                     default:

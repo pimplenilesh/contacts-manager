@@ -13,6 +13,7 @@ using FluentAssertions;
 using ContactsManager.UnitTests.Builders;
 using ContactsManager.Application.DTOs;
 using ContactsManager.Domain.Entities;
+using ContactsManager.Application.Exceptions;
 
 namespace ContactsManager.UnitTests.Application
 {
@@ -47,5 +48,41 @@ namespace ContactsManager.UnitTests.Application
             contacts.Should().HaveCount(1);
         }
 
+        [Fact]
+        public async void GetByIdAsync_Returns_Contact()
+        {
+            // Setup
+            var contact =  new ContactBuilder().Build();
+            _contactsRepository.Setup(x => x.GetByIdAsync(It.IsAny<int>())).Returns(Task.FromResult(contact));
+
+            var contactDto =  new ContactDTOBuilder().Build();
+            _mapper.Setup(x => x.Map<ContactDTO>(It.IsAny<Contact>())).Returns(contactDto);
+
+            // Execute
+            var result = await _contactsService.GetByIdAsync(1);
+
+
+            // Assert
+            result.Should().NotBeNull();
+            result.FirstName.Should().Be("Nilesh");
+        }
+
+        [Fact]
+        public async void GetByIdAsync_NotFound_ThrowsException()
+        {
+            // Setup
+            var contact = new ContactBuilder().With(3).Build();
+
+            _contactsRepository.Setup(x => x.GetByIdAsync(3)).Returns(Task.FromResult(contact));
+
+            var contactDto = new ContactDTOBuilder().Build();
+            _mapper.Setup(x => x.Map<ContactDTO>(It.IsAny<Contact>())).Returns(contactDto);
+
+            // Execute
+            var result = await Assert.ThrowsAsync<ContactNotFoundException>(async () => await _contactsService.GetByIdAsync(2));
+
+            // Assert
+            result.Message.Should().Be("Contact with this Id [2] not found.");
+        }
     }
 }

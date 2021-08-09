@@ -33,6 +33,12 @@ namespace ContactsManager.UnitTests.Builders
             return this;
         }
 
+        public ContactBuilder With(int Id)
+        {
+            _contact.Id = Id;
+            return this;
+        }
+
         public Contact Build()
         {
             return _contact;

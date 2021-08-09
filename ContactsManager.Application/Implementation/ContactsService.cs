@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ContactsManager.Application.Contracts;
 using ContactsManager.Application.DTOs;
+using ContactsManager.Application.Exceptions;
 using ContactsManager.Domain.Entities;
 using ContactsManager.Domain.Interfaces;
 using System;
@@ -34,6 +35,12 @@ namespace ContactsManager.Application.Implementation
         public async Task<ContactDTO> GetByIdAsync(int id)
         {
             var result = await _contactsRepository.GetByIdAsync(id);
+
+            if(result == null)
+            {
+                throw new ContactNotFoundException($"Contact with this Id [{id}] not found.");
+            }
+
             return _mapper.Map<ContactDTO>(result);
         }
 
@@ -47,10 +54,9 @@ namespace ContactsManager.Application.Implementation
         {
             var result = await _contactsRepository.GetByIdAsync(id);
 
-            //TODO:  Throw exception
             if (result == null)
             {
-                throw new Exception("Not found");
+                throw new ContactNotFoundException($"Contact with this Id [{id}] not found.");
             }
 
             result.Email = contact.Email;
@@ -69,10 +75,9 @@ namespace ContactsManager.Application.Implementation
         {
             var result = await _contactsRepository.GetByIdAsync(id);
 
-            //TODO:  Throw exception
             if (result == null)
             {
-                throw new Exception("Not found");
+                throw new ContactNotFoundException($"Contact with this Id [{id}] not found.");
             }
 
             var deleteResult = await _contactsRepository.DeleteAsync(result);

@@ -67,6 +67,7 @@ namespace ContactsManager.API
 
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseErrorHandlingMiddleware();
 
             app.UseEndpoints(endpoints =>
             {
