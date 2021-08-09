@@ -1,5 +1,8 @@
 ﻿using ContactsManager.Application.Contracts;
+using ContactsManager.Application.DTOs;
 using ContactsManager.Application.Implementation;
+using ContactsManager.Application.Validators;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -15,8 +18,8 @@ namespace ContactsManager.Application
         public static void AddApplicationLayer(this IServiceCollection services)
         {
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            //services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             services.AddTransient<IContactsService, ContactsService>();
+            ///services.AddTransient<IValidator<ContactDTO>, ContactValidator>();
         }
     }
 }

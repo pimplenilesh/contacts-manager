@@ -24,6 +24,13 @@ namespace ContactsManager.Application.Implementation
 
         public async Task<ContactDTO> AddAsync(ContactDTO contactDTO)
         {
+            var existingContact = await _contactsRepository.GetContactAsync(_mapper.Map<Contact>(contactDTO));
+
+            if (existingContact != null)
+            {
+                throw new ContactAlreadyExistsException($"Contact with phone number {contactDTO.PhoneNumber} or Email Id {contactDTO.Email}, already exists.");
+            }
+
             var contactEntity = _mapper.Map<Contact>(contactDTO);
             contactEntity.Created = DateTime.Now;
             contactEntity.CreatedBy = "user";
@@ -36,7 +43,7 @@ namespace ContactsManager.Application.Implementation
         {
             var result = await _contactsRepository.GetByIdAsync(id);
 
-            if(result == null)
+            if (result == null)
             {
                 throw new ContactNotFoundException($"Contact with this Id [{id}] not found.");
             }

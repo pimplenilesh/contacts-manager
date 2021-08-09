@@ -9,6 +9,6 @@ namespace ContactsManager.Domain.Interfaces
 {
     public interface IContactsRepository : IGenericRepository<Contact>
     {
-
+        Task<Contact> GetContactAsync(Contact contact);
     }
 }

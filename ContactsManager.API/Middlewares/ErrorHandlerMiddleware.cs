@@ -37,6 +37,9 @@ namespace ContactsManager.API.Middlewares
 
                 switch (error)
                 {
+                    case ContactAlreadyExistsException e:
+                        response.StatusCode = (int)HttpStatusCode.Conflict;
+                        break;
                     case ContactNotFoundException e:
                         response.StatusCode = (int)HttpStatusCode.NotFound;
                         break;

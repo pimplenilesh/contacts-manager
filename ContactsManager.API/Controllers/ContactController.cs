@@ -1,5 +1,9 @@
 ﻿using ContactsManager.Application.Contracts;
 using ContactsManager.Application.DTOs;
+using ContactsManager.Application.Validators;
+using ContactsManager.Application.Wrappers;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -17,9 +21,11 @@ namespace ContactsManager.API.Controllers
     public class ContactsController : ControllerBase
     {
         private readonly IContactsService _contactsService;
-        public ContactsController(IContactsService contactsService)
+        IValidator<ContactDTO> _validator;
+        public ContactsController(IContactsService contactsService, IValidator<ContactDTO> validator)
         {
             _contactsService = contactsService;
+            _validator = validator;
         }
 
         // GET: api/<ContactsController>
@@ -42,6 +48,12 @@ namespace ContactsManager.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ContactDTO contactDTO)
         {
+            //var validation = await _validator.ValidateAsync(contactDTO);
+            //if (!validation.IsValid)
+            //{
+            //    return ValidationFailed(contactDTO, validation);
+            //}
+
             var result = await _contactsService.AddAsync(contactDTO);
             return Created("Contacts/Get", result);
         }
@@ -50,6 +62,12 @@ namespace ContactsManager.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] ContactDTO contact)
         {
+            //var validation = await _validator.ValidateAsync(contact);
+            //if (!validation.IsValid)
+            //{
+            //    return ValidationFailed(contact, validation);
+            //}
+
             var result = await _contactsService.UpdateAsync(id, contact);
             return Ok(result);
         }
@@ -60,6 +78,19 @@ namespace ContactsManager.API.Controllers
         {
             bool result = await _contactsService.DeleteAsync(id);
             return Ok(result);
+        }
+
+        private IActionResult ValidationFailed(ContactDTO contactDTO, ValidationResult validation)
+        {
+            var response = new Response<ContactDTO>
+            {
+                Errors = validation.Errors.Select(x => x.ErrorMessage).ToList(),
+                Data = contactDTO,
+                Succeeded = false,
+                Message = "One or more validations failed."
+            };
+
+            return BadRequest(response);
         }
     }
 }

@@ -47,6 +47,12 @@ namespace ContactsManager.Infrastructure.Repositories
             return contact;
         }
 
+        public async Task<Contact> GetContactAsync(Contact contact)
+        {
+            var contactResult = await _contacts.FirstOrDefaultAsync(x => x.Email.Equals(contact.Email) || x.PhoneNumber.Equals(contact.PhoneNumber));
+            return contactResult;
+        }
+
         public async Task<Contact> UpdateAsync(Contact entity)
         {
             _context.Entry(entity).State = EntityState.Modified;

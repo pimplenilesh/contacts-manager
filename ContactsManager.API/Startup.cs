@@ -1,7 +1,9 @@
 using ContactsManager.API.Extension;
 using ContactsManager.Application;
+using ContactsManager.Application.Validators;
 using ContactsManager.Infrastructure;
 using ContactsManager.Infrastructure.Persistence;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -35,8 +37,11 @@ namespace ContactsManager.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-            
+            services.AddControllers().AddFluentValidation(fl =>
+            {
+                fl.RegisterValidatorsFromAssemblyContaining<ContactValidator>();
+            }); 
+
             services.AddSwaggerExtension();
             services.AddInfrastructure(Configuration);
             services.AddApplicationLayer();
