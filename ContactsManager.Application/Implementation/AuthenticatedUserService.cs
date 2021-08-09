@@ -13,7 +13,7 @@ namespace ContactsManager.Application.Implementation
     {
         public AuthenticatedUserService(IHttpContextAccessor httpContextAccessor)
         {
-            UserId = httpContextAccessor.HttpContext?.User?.FindFirstValue("uid");
+            UserId = httpContextAccessor.HttpContext?.User?.Identity.Name;
         }
 
         public string UserId { get; }

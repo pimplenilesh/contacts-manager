@@ -20,7 +20,10 @@ namespace ContactsManager.Application.Validators
             RuleFor(x => x.PhoneNumber).NotEmpty().Matches(@"^[6-9]\d{9}$");
             RuleFor(x => x.Email).NotEmpty().EmailAddress(FluentValidation.Validators.EmailValidationMode.AspNetCoreCompatible);
             RuleFor(x => x.LastName).NotEmpty().Length(1, 50);
-            RuleFor(x => x.Status).NotEmpty().Must(x => x.Equals("Active") || x.Equals("Inactive"));
+            RuleFor(x => x.Status).
+                            NotEmpty()
+                            .Must(x => x.Equals("Active") || x.Equals("Inactive"))
+                            .WithMessage("Supplied value did not match with values allowed: Active, Inactive.");
         }
     }
 }
