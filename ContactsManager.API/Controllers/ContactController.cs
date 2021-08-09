@@ -1,14 +1,9 @@
 ﻿using ContactsManager.Application.Contracts;
 using ContactsManager.Application.DTOs;
-using ContactsManager.Application.Validators;
-using ContactsManager.Application.Wrappers;
 using FluentValidation;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -16,7 +11,8 @@ using System.Threading.Tasks;
 namespace ContactsManager.API.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    [ApiVersion("1.0")]
     [ApiController]
     public class ContactsController : ControllerBase
     {
@@ -30,7 +26,7 @@ namespace ContactsManager.API.Controllers
 
         // GET: api/<ContactsController>
         [HttpGet]
-        public async Task<IEnumerable<ContactDTO>> Get()
+        public async Task<IEnumerable<ContactResultDTO>> Get()
         {
             var contacts = await _contactsService.GetAllContactsAsync();
             return contacts;
@@ -48,12 +44,6 @@ namespace ContactsManager.API.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ContactDTO contactDTO)
         {
-            //var validation = await _validator.ValidateAsync(contactDTO);
-            //if (!validation.IsValid)
-            //{
-            //    return ValidationFailed(contactDTO, validation);
-            //}
-
             var result = await _contactsService.AddAsync(contactDTO);
             return Created("Contacts/Get", result);
         }
@@ -62,12 +52,6 @@ namespace ContactsManager.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Put(int id, [FromBody] ContactDTO contact)
         {
-            //var validation = await _validator.ValidateAsync(contact);
-            //if (!validation.IsValid)
-            //{
-            //    return ValidationFailed(contact, validation);
-            //}
-
             var result = await _contactsService.UpdateAsync(id, contact);
             return Ok(result);
         }
@@ -78,19 +62,6 @@ namespace ContactsManager.API.Controllers
         {
             bool result = await _contactsService.DeleteAsync(id);
             return Ok(result);
-        }
-
-        private IActionResult ValidationFailed(ContactDTO contactDTO, ValidationResult validation)
-        {
-            var response = new Response<ContactDTO>
-            {
-                Errors = validation.Errors.Select(x => x.ErrorMessage).ToList(),
-                Data = contactDTO,
-                Succeeded = false,
-                Message = "One or more validations failed."
-            };
-
-            return BadRequest(response);
         }
     }
 }

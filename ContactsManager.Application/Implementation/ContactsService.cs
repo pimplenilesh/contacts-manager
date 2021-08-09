@@ -22,7 +22,7 @@ namespace ContactsManager.Application.Implementation
             _mapper = mapper;
         }
 
-        public async Task<ContactDTO> AddAsync(ContactDTO contactDTO)
+        public async Task<ContactResultDTO> AddAsync(ContactDTO contactDTO)
         {
             var existingContact = await _contactsRepository.GetContactAsync(_mapper.Map<Contact>(contactDTO));
 
@@ -36,10 +36,10 @@ namespace ContactsManager.Application.Implementation
             contactEntity.CreatedBy = "user";
 
             var contact = await _contactsRepository.AddAsync(contactEntity);
-            return _mapper.Map<ContactDTO>(contact);
+            return _mapper.Map<ContactResultDTO>(contact);
         }
 
-        public async Task<ContactDTO> GetByIdAsync(int id)
+        public async Task<ContactResultDTO> GetByIdAsync(int id)
         {
             var result = await _contactsRepository.GetByIdAsync(id);
 
@@ -48,13 +48,13 @@ namespace ContactsManager.Application.Implementation
                 throw new ContactNotFoundException($"Contact with this Id [{id}] not found.");
             }
 
-            return _mapper.Map<ContactDTO>(result);
+            return _mapper.Map<ContactResultDTO>(result);
         }
 
-        public async Task<List<ContactDTO>> GetAllContactsAsync()
+        public async Task<List<ContactResultDTO>> GetAllContactsAsync()
         {
             var contacts = await _contactsRepository.GetAllAsync();
-            return _mapper.Map<List<ContactDTO>>(contacts);
+            return _mapper.Map<List<ContactResultDTO>>(contacts);
         }
 
         public async Task<ContactDTO> UpdateAsync(int id, ContactDTO contact)

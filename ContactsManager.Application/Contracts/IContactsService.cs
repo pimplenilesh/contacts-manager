@@ -9,9 +9,9 @@ namespace ContactsManager.Application.Contracts
 {
     public interface IContactsService
     {
-        Task<List<ContactDTO>> GetAllContactsAsync();
-        Task<ContactDTO> AddAsync(ContactDTO contactDTO);
-        Task<ContactDTO> GetByIdAsync(int id);
+        Task<List<ContactResultDTO>> GetAllContactsAsync();
+        Task<ContactResultDTO> AddAsync(ContactDTO contactDTO);
+        Task<ContactResultDTO> GetByIdAsync(int id);
         Task<ContactDTO> UpdateAsync(int id, ContactDTO contact);
         Task<bool> DeleteAsync(int id);
     }

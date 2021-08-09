@@ -40,7 +40,9 @@ namespace ContactsManager.API
             services.AddControllers().AddFluentValidation(fl =>
             {
                 fl.RegisterValidatorsFromAssemblyContaining<ContactValidator>();
-            }); 
+            });
+
+            services.AddApiVersioningExtension();
 
             services.AddSwaggerExtension();
             services.AddInfrastructure(Configuration);
@@ -60,8 +62,8 @@ namespace ContactsManager.API
 
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
-                var context = serviceScope.ServiceProvider.GetRequiredService<ContactsDbContext>();
-                context.Database.Migrate();
+                var context = serviceScope.ServiceProvider.GetRequiredService<IContactsDbContext>();
+                (context as ContactsDbContext).Database.Migrate();
             }
 
             app.UseHttpsRedirection();

@@ -14,9 +14,9 @@ namespace ContactsManager.Infrastructure.Repositories
     public class ContactsRepository : IContactsRepository
     {
         private readonly DbSet<Contact> _contacts;
-        private readonly ContactsDbContext _context;
+        private readonly IContactsDbContext _context;
 
-        public ContactsRepository(ContactsDbContext context)
+        public ContactsRepository(IContactsDbContext context)
         {
             _contacts = context.Contact;
             _context = context;

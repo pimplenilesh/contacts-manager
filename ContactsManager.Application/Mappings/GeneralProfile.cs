@@ -14,6 +14,7 @@ namespace ContactsManager.Application.Mappings
         public GeneralProfile()
         {
             CreateMap<Contact, ContactDTO>().ReverseMap();
+            CreateMap<Contact, ContactResultDTO>();
         }
     }
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ContactsManager.Infrastructure.Persistence
 {
-    public partial class ContactsDbContext : DbContext
+    public partial class ContactsDbContext : DbContext, IContactsDbContext
     {
         public ContactsDbContext(DbContextOptions<ContactsDbContext> dbContextOptions) : base(dbContextOptions)
         {

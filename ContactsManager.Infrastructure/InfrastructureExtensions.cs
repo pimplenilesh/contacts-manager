@@ -18,7 +18,7 @@ namespace ContactsManager.Infrastructure
     {
         public static void AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<ContactsDbContext>(item => item.UseSqlServer(configuration.GetConnectionString("ContactsDatabase")));
+            services.AddDbContext<IContactsDbContext, ContactsDbContext>(item => item.UseSqlServer(configuration.GetConnectionString("ContactsDatabase")));
             services.AddTransient<IContactsRepository, ContactsRepository>();
         }
 
