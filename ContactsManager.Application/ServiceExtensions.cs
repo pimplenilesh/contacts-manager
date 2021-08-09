@@ -19,7 +19,7 @@ namespace ContactsManager.Application
         {
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             services.AddTransient<IContactsService, ContactsService>();
-            ///services.AddTransient<IValidator<ContactDTO>, ContactValidator>();
+            services.AddScoped<IAuthenticatedUserService, AuthenticatedUserService>();
         }
     }
 }

@@ -12,7 +12,7 @@ namespace ContactsManager.Application.Contracts
         Task<List<ContactResultDTO>> GetAllContactsAsync();
         Task<ContactResultDTO> AddAsync(ContactDTO contactDTO);
         Task<ContactResultDTO> GetByIdAsync(int id);
-        Task<ContactDTO> UpdateAsync(int id, ContactDTO contact);
+        Task<ContactResultDTO> UpdateAsync(int id, ContactDTO contact);
         Task<bool> DeleteAsync(int id);
     }
 }

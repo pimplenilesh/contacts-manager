@@ -6,8 +6,6 @@ using ContactsManager.Domain.Entities;
 using ContactsManager.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ContactsManager.Application.Implementation
@@ -15,10 +13,12 @@ namespace ContactsManager.Application.Implementation
     public class ContactsService : IContactsService
     {
         private readonly IContactsRepository _contactsRepository;
+        private readonly IAuthenticatedUserService _authenticatedUserService;
         private readonly IMapper _mapper;
-        public ContactsService(IContactsRepository contactsRepository, IMapper mapper)
+        public ContactsService(IContactsRepository contactsRepository, IAuthenticatedUserService authenticatedUserService, IMapper mapper)
         {
             _contactsRepository = contactsRepository;
+            _authenticatedUserService = authenticatedUserService;
             _mapper = mapper;
         }
 
@@ -33,7 +33,7 @@ namespace ContactsManager.Application.Implementation
 
             var contactEntity = _mapper.Map<Contact>(contactDTO);
             contactEntity.Created = DateTime.Now;
-            contactEntity.CreatedBy = "user";
+            contactEntity.CreatedBy = _authenticatedUserService.UserId;
 
             var contact = await _contactsRepository.AddAsync(contactEntity);
             return _mapper.Map<ContactResultDTO>(contact);
@@ -57,7 +57,7 @@ namespace ContactsManager.Application.Implementation
             return _mapper.Map<List<ContactResultDTO>>(contacts);
         }
 
-        public async Task<ContactDTO> UpdateAsync(int id, ContactDTO contact)
+        public async Task<ContactResultDTO> UpdateAsync(int id, ContactDTO contact)
         {
             var result = await _contactsRepository.GetByIdAsync(id);
 
@@ -72,10 +72,10 @@ namespace ContactsManager.Application.Implementation
             result.LastName = contact.LastName;
             result.Status = contact.Status;
             result.LastModified = DateTime.Now;
-            result.LastModifiedBy = "user";
+            result.LastModifiedBy = _authenticatedUserService.UserId;
 
             var updated = await _contactsRepository.UpdateAsync(result);
-            return _mapper.Map<ContactDTO>(updated);
+            return _mapper.Map<ContactResultDTO>(updated);
         }
 
         public async Task<bool> DeleteAsync(int id)

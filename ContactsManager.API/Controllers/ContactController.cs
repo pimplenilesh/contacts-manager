@@ -1,4 +1,5 @@
-﻿using ContactsManager.Application.Contracts;
+﻿using ContactsManager.API.Extension;
+using ContactsManager.Application.Contracts;
 using ContactsManager.Application.DTOs;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace ContactsManager.API.Controllers
 {
+    [LogHandler]
     [Authorize]
     [Route("api/v{version:apiVersion}/[controller]")]
     [ApiVersion("1.0")]
@@ -27,7 +29,7 @@ namespace ContactsManager.API.Controllers
         // GET: api/<ContactsController>
         [HttpGet]
         public async Task<IEnumerable<ContactResultDTO>> Get()
-        {
+        { 
             var contacts = await _contactsService.GetAllContactsAsync();
             return contacts;
         }

@@ -22,11 +22,13 @@ namespace ContactsManager.UnitTests.Application
         private IContactsService _contactsService;
         private Mock<IContactsRepository> _contactsRepository;
         private Mock<IMapper> _mapper;
+        private readonly Mock<IAuthenticatedUserService> _mockAuth;
         public ContactServiceTests()
         {
             _contactsRepository = new Mock<IContactsRepository>();
             _mapper = new Mock<IMapper>();
-            _contactsService = new ContactsService(_contactsRepository.Object, _mapper.Object);
+            _mockAuth = new Mock<IAuthenticatedUserService>();
+            _contactsService = new ContactsService(_contactsRepository.Object, _mockAuth.Object, _mapper.Object);
         }
 
         [Fact]
@@ -36,8 +38,8 @@ namespace ContactsManager.UnitTests.Application
             var contactList = new List<Contact> { new ContactBuilder().Build() };
             _contactsRepository.Setup(x => x.GetAllAsync()).Returns(Task.FromResult(contactList));
 
-            var contactDtoList = new List<ContactDTO> { new ContactDTOBuilder().Build() };
-            _mapper.Setup(x => x.Map<List<ContactDTO>>(It.IsAny<List<Contact>>())).Returns(contactDtoList);
+            var contactDtoList = new List<ContactResultDTO> { new ContactResultDTOBuilder().Build() };
+            _mapper.Setup(x => x.Map<List<ContactResultDTO>>(It.IsAny<List<Contact>>())).Returns(contactDtoList);
             
             // Execute
             var contacts = await _contactsService.GetAllContactsAsync();
@@ -55,8 +57,8 @@ namespace ContactsManager.UnitTests.Application
             var contact =  new ContactBuilder().Build();
             _contactsRepository.Setup(x => x.GetByIdAsync(It.IsAny<int>())).Returns(Task.FromResult(contact));
 
-            var contactDto =  new ContactDTOBuilder().Build();
-            _mapper.Setup(x => x.Map<ContactDTO>(It.IsAny<Contact>())).Returns(contactDto);
+            var contactDto =  new ContactResultDTOBuilder().Build();
+            _mapper.Setup(x => x.Map<ContactResultDTO>(It.IsAny<Contact>())).Returns(contactDto);
 
             // Execute
             var result = await _contactsService.GetByIdAsync(1);
@@ -75,8 +77,8 @@ namespace ContactsManager.UnitTests.Application
 
             _contactsRepository.Setup(x => x.GetByIdAsync(3)).Returns(Task.FromResult(contact));
 
-            var contactDto = new ContactDTOBuilder().Build();
-            _mapper.Setup(x => x.Map<ContactDTO>(It.IsAny<Contact>())).Returns(contactDto);
+            var contactDto = new ContactResultDTOBuilder().Build();
+            _mapper.Setup(x => x.Map<ContactResultDTO>(It.IsAny<Contact>())).Returns(contactDto);
 
             // Execute
             var result = await Assert.ThrowsAsync<ContactNotFoundException>(async () => await _contactsService.GetByIdAsync(2));
