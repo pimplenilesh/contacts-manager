@@ -61,8 +61,6 @@ namespace ContactsManager.API
 
             app.UseHttpsRedirection();
 
-            loggerFactory.AddSerilog();
-
             app.UseRouting();
 
             app.UseAuthentication();
