@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ContactsManager.Domain\ContactsManager.Domain.csproj" />
-    <ProjectReference Include="..\ContactsManager.Infrastructure\ContactsManager.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
