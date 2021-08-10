@@ -12,16 +12,16 @@ namespace ContactsManager.IntegrationTests
     public class ContactsAPITests
     {
         [Fact]
-        public async Task GetAllContactsTestAsycn()
+        public async Task GetAllContactsTestAsycn_Returns_UnAuthorizedResponse()
         {
             using var client = new TestClientProvider().Client;
-            var request = new HttpRequestMessage(new HttpMethod("Get"), "api/Contacts");
+            var request = new HttpRequestMessage(new HttpMethod("Get"), "api/v1.0/Contacts");
 
             var response = await client.SendAsync(request);
 
-            response.EnsureSuccessStatusCode();
+            //response.EnsureSuccessStatusCode();
 
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
         }
     }
 }

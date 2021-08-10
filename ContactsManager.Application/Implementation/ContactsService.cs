@@ -24,12 +24,7 @@ namespace ContactsManager.Application.Implementation
 
         public async Task<ContactResultDTO> AddAsync(ContactDTO contactDTO)
         {
-            var existingContact = await _contactsRepository.GetContactAsync(_mapper.Map<Contact>(contactDTO));
-
-            if (existingContact != null)
-            {
-                throw new ContactAlreadyExistsException($"Contact with phone number {contactDTO.PhoneNumber} or Email Id {contactDTO.Email}, already exists.");
-            }
+            await CheckIfContactExists(contactDTO);
 
             var contactEntity = _mapper.Map<Contact>(contactDTO);
             contactEntity.Created = DateTime.Now;
@@ -66,6 +61,8 @@ namespace ContactsManager.Application.Implementation
                 throw new ContactNotFoundException($"Contact with this Id [{id}] not found.");
             }
 
+            await CheckIfCanUpdate(id, contact);
+
             _mapper.Map(contact, result);
             result.LastModified = DateTime.Now;
             result.LastModifiedBy = _authenticatedUserService.UserId;
@@ -85,6 +82,26 @@ namespace ContactsManager.Application.Implementation
 
             var deleteResult = await _contactsRepository.DeleteAsync(result);
             return deleteResult;
+        }
+
+        private async Task CheckIfContactExists(ContactDTO contactDTO)
+        {
+            var existingContact = await _contactsRepository.GetContactAsync(_mapper.Map<Contact>(contactDTO));
+
+            if (existingContact != null)
+            {
+                throw new ContactAlreadyExistsException($"Contact with phone number {contactDTO.PhoneNumber} or Email Id {contactDTO.Email}, already exists.");
+            }
+        }
+
+        private async Task CheckIfCanUpdate(int Id, ContactDTO contactDTO)
+        {
+            var existingContact = await _contactsRepository.GetContactAsync(_mapper.Map<Contact>(contactDTO));
+
+            if (existingContact != null && existingContact.Id != Id)
+            {
+                throw new ContactAlreadyExistsException($"Contact with phone number {contactDTO.PhoneNumber} or Email Id {contactDTO.Email}, already exists.");
+            }
         }
     }
 }
