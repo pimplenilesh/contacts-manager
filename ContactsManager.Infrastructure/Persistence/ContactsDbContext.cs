@@ -11,17 +11,29 @@ namespace ContactsManager.Infrastructure.Persistence
 {
     public partial class ContactsDbContext : DbContext, IContactsDbContext
     {
+        public DbSet<Contact> Contact { get; set; }
+
         public ContactsDbContext(DbContextOptions<ContactsDbContext> dbContextOptions) : base(dbContextOptions)
         {
 
         }
-        public DbSet<Contact> Contact { get; set; }
-
+       
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new ContactMap());
 
             base.OnModelCreating(modelBuilder);
         }
+     
+        public void SetModified<T>(T entity)
+        {
+            Entry(entity).State = EntityState.Modified;
+        }
+
+        public void RemoveEntity<T>(T entity)
+        {
+            Remove(entity);
+        }
     }
 }
+ 

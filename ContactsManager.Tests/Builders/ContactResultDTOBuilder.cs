@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace ContactsManager.UnitTests.Builders
 {
-    public class ContactDTOBuilder
+    public class ContactResultDTOBuilder
     {
-        private ContactDTO _contactDTO;
+        private ContactResultDTO _contactDTO;
 
-        public ContactDTOBuilder()
+        public ContactResultDTOBuilder()
         {
-            _contactDTO = new ContactDTO
+            _contactDTO = new ContactResultDTO
             {
                 FirstName = "Nilesh",
                 LastName = "Pimple",
@@ -23,9 +23,10 @@ namespace ContactsManager.UnitTests.Builders
             };
         }
 
-        public ContactDTO Build()
+        public ContactResultDTO Build()
         {
             return _contactDTO;
         }
+
     }
 }

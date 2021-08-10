@@ -31,7 +31,7 @@ namespace ContactsManager.Infrastructure.Repositories
 
         public async Task<bool> DeleteAsync(Contact entity)
         {
-            _context.Remove(entity);
+            _context.RemoveEntity(entity);
             return await _context.SaveChangesAsync() > 0;
         }
 
@@ -55,7 +55,7 @@ namespace ContactsManager.Infrastructure.Repositories
 
         public async Task<Contact> UpdateAsync(Contact entity)
         {
-            _context.Entry(entity).State = EntityState.Modified;
+            _context.SetModified(entity);
             await _context.SaveChangesAsync();
             return entity;
         }

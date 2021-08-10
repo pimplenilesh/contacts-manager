@@ -62,5 +62,41 @@ namespace ContactsManager.UnitTests.Infrastructure
             _mockDb.Verify(x => x.Contact.AddAsync(It.IsAny<Contact>(), It.IsAny<CancellationToken>()));
             _mockDb.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
         }
+
+
+        [Fact]
+        public async void UpdateAsync_Updates_And_Saves()
+        {
+            // Setup
+            var contact = new ContactBuilder().Build();
+            _mockDb.Setup(x => x.SetModified(It.IsAny<Contact>()));
+            _contactsRepository = new ContactsRepository(_mockDb.Object);
+
+            // Execute 
+            var result = await _contactsRepository.UpdateAsync(contact);
+
+            // Assert
+            result.Should().NotBeNull();
+            _mockDb.Verify(x => x.SetModified(It.IsAny<Contact>()));
+            _mockDb.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
+        }
+
+        [Fact]
+        public async void DeleteAsync_Delete_Removes_And_Saves()
+        {
+            // Setup
+            var contact = new ContactBuilder().Build();
+            _mockDb.Setup(x => x.RemoveEntity(It.IsAny<Contact>()));
+            _contactsRepository = new ContactsRepository(_mockDb.Object);
+            _mockDb.Setup(x => x.SaveChangesAsync(It.IsAny<CancellationToken>())).Returns(Task.FromResult(1));
+
+            // Execute 
+            var result = await _contactsRepository.DeleteAsync(contact);
+
+            // Assert
+            result.Should().BeTrue();
+            _mockDb.Verify(x => x.RemoveEntity(It.IsAny<Contact>()));
+            _mockDb.Verify(x => x.SaveChangesAsync(It.IsAny<CancellationToken>()));
+        }
     }
 }

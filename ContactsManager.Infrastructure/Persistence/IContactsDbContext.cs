@@ -20,6 +20,7 @@ namespace ContactsManager.Infrastructure.Persistence
         
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
         EntityEntry<TEntity> Remove<TEntity>([NotNullAttribute] TEntity entity) where TEntity : class;
-        EntityEntry<TEntity> Entry<TEntity>([NotNullAttribute] TEntity entity) where TEntity : class;
+        void RemoveEntity<T>(T entity);
+        void SetModified<T>(T entity);
     }
 }

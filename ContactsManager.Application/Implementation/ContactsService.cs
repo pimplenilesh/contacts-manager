@@ -66,11 +66,7 @@ namespace ContactsManager.Application.Implementation
                 throw new ContactNotFoundException($"Contact with this Id [{id}] not found.");
             }
 
-            result.Email = contact.Email;
-            result.PhoneNumber = contact.PhoneNumber;
-            result.FirstName = contact.FirstName;
-            result.LastName = contact.LastName;
-            result.Status = contact.Status;
+            _mapper.Map(contact, result);
             result.LastModified = DateTime.Now;
             result.LastModifiedBy = _authenticatedUserService.UserId;
 
